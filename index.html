@@ -38,6 +38,43 @@
       color: white;
       padding: 20px;
       text-align: center;
+      position: relative;
+    }
+    
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 10px;
+    }
+    
+    .logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .logo-placeholder {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #4caf50, #2196f3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+      border: 3px solid white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .header-content {
+      flex: 1;
     }
     
     .header h2 {
@@ -91,6 +128,33 @@
       color: #333;
       border-bottom-left-radius: 6px;
       border: 1px solid #c8e6c9;
+    }
+    
+    .bot-msg-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+    
+    .bot-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    .bot-avatar-placeholder {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #4caf50, #2196f3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
     }
     
     .typing {
@@ -174,19 +238,52 @@
       .msg {
         max-width: 90%;
       }
+      
+      .logo, .logo-placeholder {
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+      }
+      
+      .header {
+        padding: 15px;
+      }
     }
   </style>
 </head>
 <body>
   <div id="chat-container">
     <div class="header">
-      <h2>♻️ EcoAvoBot 🌍</h2>
-      <p>Il tuo assistente per un futuro sostenibile</p>
+      <div class="logo-container">
+        <!-- 
+          SOSTITUISCI QUESTO CON IL TUO LOGO:
+          1. Carica la tua immagine nella cartella del progetto
+          2. Cambia "logo.png" con il nome del tuo file
+          3. Rimuovi il div con class "logo-placeholder"
+          4. Decommenta il tag img sotto
+        -->
+        <!--<div class="logo-placeholder">EA</div>  -->
+       
+        <img src="logoAvogreen.png" alt="EcoAvoBot Logo" class="logo">
+      
+        
+        <div class="header-content">
+          <h2>♻️ EcoAvoBot 🌍</h2>
+          <p>Il tuo assistente per un futuro sostenibile</p>
+        </div>
+      </div>
     </div>
     
     <div id="messages">
       <div class="msg bot">
-        <span class="strong">EcoAvoBot:</span> Ciao! Sono il tuo assistente ambientale. 💚<br>
+        <div class="bot-msg-header">
+           <!--<div class="bot-avatar-placeholder">EA</div>  -->
+         
+          <img src="logoAvogreen.png" alt="EcoAvoBot" class="bot-avatar">
+        
+          <span class="strong">EcoAvoBot:</span>
+        </div>
+        Ciao! Sono il tuo assistente ambientale. 💚<br>
         Chiedimi informazioni su riciclo, risparmio energetico, mobilità sostenibile e molto altro!
       </div>
     </div>
@@ -216,10 +313,23 @@
       messageDiv.className = `msg ${type}`;
       
       const timestamp = new Date().toLocaleTimeString();
-      messageDiv.innerHTML = `
-        <span class="strong">${type === 'user' ? 'Tu' : 'EcoAvoBot'}:</span> ${text}
-        <div class="timestamp">${timestamp}</div>
-      `;
+      
+      if (type === 'bot') {
+        messageDiv.innerHTML = `
+          <div class="bot-msg-header">
+            <div class="bot-avatar-placeholder">EA</div>
+            <!-- <img src="logo.png" alt="EcoAvoBot" class="bot-avatar"> -->
+            <span class="strong">EcoAvoBot:</span>
+          </div>
+          ${text}
+          <div class="timestamp">${timestamp}</div>
+        `;
+      } else {
+        messageDiv.innerHTML = `
+          <span class="strong">Tu:</span> ${text}
+          <div class="timestamp">${timestamp}</div>
+        `;
+      }
       
       messages.appendChild(messageDiv);
       messages.scrollTop = messages.scrollHeight;
@@ -230,7 +340,12 @@
       typingDiv.id = 'typing-indicator';
       typingDiv.className = 'msg typing';
       typingDiv.innerHTML = `
-        <span class="strong">EcoAvoBot:</span> Sta pensando...
+        <div class="bot-msg-header">
+          <div class="bot-avatar-placeholder">EA</div>
+          <!-- <img src="logo.png" alt="EcoAvoBot" class="bot-avatar"> -->
+          <span class="strong">EcoAvoBot:</span>
+        </div>
+        Sta pensando...
         <div class="timestamp">${new Date().toLocaleTimeString()}</div>
       `;
       
