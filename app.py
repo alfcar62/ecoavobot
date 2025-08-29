@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import re
 import json
@@ -113,6 +113,15 @@ def chat():
         traceback.print_exc()
         return jsonify({"answer": "Si è verificato un errore. Riprova più tardi."})
 
+# 🔥 SERVE IL FRONTEND
+@app.route('/')
+def serve_index():
+    return send_from_directory('.', 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory('.', path)
+
 @app.route("/test")
 def test():
     return jsonify({
@@ -122,21 +131,9 @@ def test():
         "patterns": sum(len(intent["patterns"]) for intent in intents)
     })
 
-@app.route("/debug")
-def debug():
-    test_messages = ["Ciao", "Come si fa la raccolta differenziata?", "Test"]
-    results = []
-    
-    for msg in test_messages:
-        response, intent, confidence = find_best_response(msg)
-        results.append({
-            "message": msg,
-            "response": response,
-            "intent": intent,
-            "confidence": confidence
-        })
-    
-    return jsonify({"tests": results})
+@app.route("/health")
+def health():
+    return jsonify({"status": "healthy", "service": "EcoAvoBot"})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
