@@ -4,60 +4,17 @@ import re
 import json
 import random
 import os
-import math  # ⬅️ AGGIUNTO QUESTA IMPORT
-from collections import Counter
 
 app = Flask(__name__)
 CORS(app)
 
-# === IMPLEMENTAZIONE MANUALE TF-IDF SEMPLIFICATA ===
+# Preprocessamento semplice
 def preprocess_text(text):
+    if not text:
+        return ""
     text = text.lower().strip()
     text = re.sub(r'[^\w\s\']', ' ', text)
     return ' '.join(text.split())
-
-def tokenize(text):
-    return text.split()
-
-def compute_tf(text):
-    tokens = tokenize(text)
-    total_words = len(tokens)
-    tf_dict = {}
-    for word in tokens:
-        tf_dict[word] = tf_dict.get(word, 0) + 1 / total_words
-    return tf_dict
-
-def compute_idf(documents):
-    n_docs = len(documents)
-    idf_dict = {}
-    for doc in documents:
-        tokens = set(tokenize(doc))
-        for token in tokens:
-            idf_dict[token] = idf_dict.get(token, 0) + 1
-    
-    for token, count in idf_dict.items():
-        idf_dict[token] = 1 + math.log(n_docs / (count + 1))
-    
-    return idf_dict
-
-def compute_tfidf_vector(text, idf_dict):
-    tf_dict = compute_tf(text)
-    vector = {}
-    for word, tf_val in tf_dict.items():
-        vector[word] = tf_val * idf_dict.get(word, 0)
-    return vector
-
-def cosine_similarity(vec1, vec2):
-    dot_product = sum(vec1.get(word, 0) * vec2.get(word, 0) for word in set(vec1) | set(vec2))
-    norm1 = sqrt(sum(val ** 2 for val in vec1.values()))
-    norm2 = sqrt(sum(val ** 2 for val in vec2.values()))
-    
-    if norm1 == 0 or norm2 == 0:
-        return 0.0
-    
-    return dot_product / (norm1 * norm2)
-
-# === FINE IMPLEMENTAZIONE TF-IDF ===
 
 # Carica intents.json
 def load_intents():
@@ -70,97 +27,120 @@ def load_intents():
     except FileNotFoundError:
         print("❌ ERRORE: File intents.json non trovato!")
         return []
+    except json.JSONDecodeError as e:
+        print(f"❌ ERRORE nel file JSON: {e}")
+        return []
 
 intents = load_intents()
 
-# Prepara i dati
-patterns_data = []
-all_documents = []
-
-for intent in intents:
-    for pattern in intent["patterns"]:
-        processed_pattern = preprocess_text(pattern)
-        patterns_data.append({
-            "text": processed_pattern,
-            "intent": intent["tag"],
-            "response": random.choice(intent["responses"])
-        })
-        all_documents.append(processed_pattern)
-
-# Calcola IDF una volta sola
-idf_dict = compute_idf(all_documents) if all_documents else {}
-
-def find_best_match(user_message):
-    if not patterns_data:
-        return None, 0.0
+# Matching semplice basato su parole chiave
+def find_best_response(user_message):
+    if not intents:
+        return "Errore: nessun intent caricato", "errore", 0.0
     
     processed_msg = preprocess_text(user_message)
-    user_vector = compute_tfidf_vector(processed_msg, idf_dict)
+    user_words = set(processed_msg.split())
     
-    best_similarity = 0.0
-    best_match = None
+    print(f"🔍 Analizzo: '{user_message}' -> '{processed_msg}'")
     
-    for pattern in patterns_data:
-        pattern_vector = compute_tfidf_vector(pattern["text"], idf_dict)
-        similarity = cosine_similarity(user_vector, pattern_vector)
-        
-        if similarity > best_similarity:
-            best_similarity = similarity
-            best_match = pattern
+    # Prima cerca match esatti con i pattern
+    for intent in intents:
+        for pattern in intent["patterns"]:
+            processed_pattern = preprocess_text(pattern)
+            if processed_msg == processed_pattern:
+                print(f"✅ Match esatto: '{processed_msg}' = '{processed_pattern}'")
+                return random.choice(intent["responses"]), intent["tag"], 0.9
     
-    return best_match, best_similarity
+    # Poi cerca parole in comune
+    best_score = 0.0
+    best_response = "Non ho capito bene, puoi essere più specifico?"
+    best_intent = "unknown"
+    
+    for intent in intents:
+        for pattern in intent["patterns"]:
+            processed_pattern = preprocess_text(pattern)
+            pattern_words = set(processed_pattern.split())
+            
+            # Calcola similarità semplice
+            common_words = user_words.intersection(pattern_words)
+            if common_words:
+                score = len(common_words) / max(len(user_words), 1)
+                print(f"📊 Intent: {intent['tag']}, Score: {score:.2f}, Common: {common_words}")
+                
+                if score > best_score:
+                    best_score = score
+                    best_intent = intent["tag"]
+                    best_response = random.choice(intent["responses"])
+    
+    print(f"🎯 Miglior match: {best_intent} (score: {best_score:.2f})")
+    return best_response, best_intent, best_score
 
 @app.route("/chat", methods=["POST"])
 def chat():
     try:
         data_req = request.get_json()
-        if not data_req or "message" not in data_req:
+        if not data_req:
             return jsonify({"answer": "Non ho ricevuto alcun messaggio."})
         
-        user_message = data_req["message"].strip()
+        user_message = data_req.get("message", "").strip()
         print(f"📩 Ricevuto: '{user_message}'")
+        
+        if not user_message:
+            return jsonify({"answer": "Il messaggio è vuoto."})
         
         if len(user_message) < 2:
             return jsonify({"answer": "Il messaggio è troppo breve."})
         
-        best_match, similarity = find_best_match(user_message)
+        response, intent, confidence = find_best_response(user_message)
         
-        print(f"🔍 Similarità: {similarity:.3f}")
-        
-        if similarity < 0.2:  # Soglia bassa per matching semplice
-            # Fallback: cerca parole chiave
-            user_text = user_message.lower()
-            for intent in intents:
-                for pattern in intent["patterns"]:
-                    if any(word in user_text for word in pattern.lower().split()[:3]):
-                        return jsonify({
-                            "intent": intent["tag"],
-                            "confidence": 0.5,
-                            "answer": random.choice(intent["responses"])
-                        })
-            
-            return jsonify({"answer": "Non ho capito bene, puoi essere più specifico?"})
+        if confidence < 0.1:
+            # Fallback per saluti semplici
+            user_lower = user_message.lower()
+            if any(word in user_lower for word in ["ciao", "salve", "buongiorno", "hello", "hey"]):
+                response = "Ciao! Sono EcoAvoBot, il tuo assistente ambientale! 🌍"
+                intent = "saluto"
+                confidence = 0.8
         
         return jsonify({
-            "intent": best_match["intent"],
-            "confidence": round(float(similarity), 2),
-            "answer": best_match["response"]
+            "intent": intent,
+            "confidence": round(float(confidence), 2),
+            "answer": response
         })
         
     except Exception as e:
-        print(f"❌ Errore in chat(): {e}")
+        print(f"❌ Errore in chat(): {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({"answer": "Si è verificato un errore. Riprova più tardi."})
 
 @app.route("/test")
 def test():
     return jsonify({
         "status": "online",
-        "patterns_loaded": len(patterns_data),
-        "message": "✅ Server funzionante senza scikit-learn!"
+        "intents_loaded": len(intents),
+        "message": "✅ Server funzionante!",
+        "patterns": sum(len(intent["patterns"]) for intent in intents)
     })
+
+@app.route("/debug")
+def debug():
+    test_messages = ["Ciao", "Come si fa la raccolta differenziata?", "Test"]
+    results = []
+    
+    for msg in test_messages:
+        response, intent, confidence = find_best_response(msg)
+        results.append({
+            "message": msg,
+            "response": response,
+            "intent": intent,
+            "confidence": confidence
+        })
+    
+    return jsonify({"tests": results})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    debug = os.environ.get("DEBUG", "False").lower() == "true"
+    debug_mode = os.environ.get("DEBUG", "False").lower() == "true"
     print(f"🚀 Avvio server su porta {port}")
-    app.run(debug=debug, port=port, host='0.0.0.0')
+    print(f"📊 Intents caricati: {len(intents)}")
+    app.run(debug=debug_mode, port=port, host='0.0.0.0')
