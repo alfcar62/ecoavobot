@@ -1,11 +1,11 @@
 from flask import Flask, request, jsonify
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics.pairwise import cosine_similarity  # Usiamo similarity invece di ML
 from flask_cors import CORS
 import re
 import json
 import random
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -30,71 +30,43 @@ def load_intents():
 
 intents = load_intents()
 
-# Prepara i dati di training
-X_train = []
-y_train = []
-all_patterns = []  # Memorizza tutti i pattern originali
-
+# Prepara i dati per similarity matching
+patterns_data = []
 for intent in intents:
     for pattern in intent["patterns"]:
-        processed_pattern = preprocess_text(pattern)
-        X_train.append(processed_pattern)
-        y_train.append(intent["tag"])
-        all_patterns.append(pattern)  # Salva il pattern originale
+        patterns_data.append({
+            "text": preprocess_text(pattern),
+            "intent": intent["tag"],
+            "response": random.choice(intent["responses"])
+        })
 
-# Addestra il classificatore ML
-if len(X_train) > 0:
-    vectorizer = TfidfVectorizer(analyzer='word', ngram_range=(1, 3), min_df=1)
-    X_vectors = vectorizer.fit_transform(X_train)
-    clf = LogisticRegression(max_iter=1000, random_state=42)
-    clf.fit(X_vectors, y_train)
-    print("✅ Classificatore ML addestrato con successo!")
+# Crea vettori TF-IDF per similarity matching
+if patterns_data:
+    vectorizer = TfidfVectorizer(analyzer='word', ngram_range=(1, 2), min_df=1)
+    pattern_texts = [item["text"] for item in patterns_data]
+    pattern_vectors = vectorizer.fit_transform(pattern_texts)
+    print("✅ Vettorizzatore preparato per similarity matching")
 else:
     vectorizer = None
-    clf = None
-    print("⚠️  Avvertenza: Classificatore non addestrato")
+    pattern_vectors = None
 
-def predict_intent_ml(user_message):
-    if clf is None:
-        return "errore", 0.0
-    
-    processed_msg = preprocess_text(user_message)
-    print(f"🔍 ML Input: '{user_message}' -> Processato: '{processed_msg}'")
-    
-    try:
-        X_test = vectorizer.transform([processed_msg])
-        intent = clf.predict(X_test)[0]
-        confidence = max(clf.predict_proba(X_test)[0])
-        print(f"🎯 ML Predetto: {intent} (confidence: {confidence:.3f})")
-        return intent, confidence
-    except Exception as e:
-        print(f"❌ Errore predizione ML: {e}")
-        return "errore", 0.0
-
-def find_similar_pattern(user_message):
-    """Trova il pattern più simile usando cosine similarity"""
+def find_best_match(user_message):
     if vectorizer is None:
-        return None, 0.0
+        return None, 0.0, "Errore: nessun dato di training"
     
     processed_msg = preprocess_text(user_message)
     user_vector = vectorizer.transform([processed_msg])
     
     best_similarity = 0.0
-    best_pattern_index = -1
+    best_match = None
     
-    # Calcola similarità con tutti i pattern di training
-    for i, pattern_vector in enumerate(X_vectors):
+    for i, pattern_vector in enumerate(pattern_vectors):
         similarity = cosine_similarity(user_vector, pattern_vector)[0][0]
         if similarity > best_similarity:
             best_similarity = similarity
-            best_pattern_index = i
+            best_match = patterns_data[i]
     
-    if best_pattern_index != -1 and best_similarity > 0.4:
-        best_intent = y_train[best_pattern_index]
-        print(f"📏 Similarità: {best_similarity:.3f} con pattern: '{all_patterns[best_pattern_index]}'")
-        return best_intent, best_similarity
-    
-    return None, 0.0
+    return best_match, best_similarity
 
 def generate_response(intent_tag):
     for intent in intents:
@@ -115,31 +87,34 @@ def chat():
         if len(user_message) < 2:
             return jsonify({"answer": "Il messaggio è troppo breve."})
         
-        # Prova con il classificatore ML
-        ml_intent, ml_confidence = predict_intent_ml(user_message)
+        # Usa similarity matching invece di ML classification
+        best_match, similarity = find_best_match(user_message)
         
-        # Se confidence bassa, prova con similarità di pattern
-        if ml_confidence < 0.4:
-            similar_intent, similarity_score = find_similar_pattern(user_message)
-            if similar_intent and similarity_score > ml_confidence:
-                ml_intent, ml_confidence = similar_intent, similarity_score
-                print(f"🔍 Usato similarità pattern: {ml_intent} ({ml_confidence:.3f})")
+        print(f"🔍 Similarità: {similarity:.3f}")
         
-        print(f"✅ Intent finale: {ml_intent}, Confidence: {ml_confidence:.3f}")
-        
-        if ml_intent == "errore" or ml_confidence < 0.3:
+        if similarity < 0.3:
             return jsonify({"answer": "Non ho capito bene, puoi essere più specifico riguardo a riciclo, energia, acqua o mobilità sostenibile?"})
         
-        answer = generate_response(ml_intent)
         return jsonify({
-            "intent": ml_intent,
-            "confidence": round(float(ml_confidence), 2),
-            "answer": answer
+            "intent": best_match["intent"],
+            "confidence": round(float(similarity), 2),
+            "answer": best_match["response"]
         })
         
     except Exception as e:
         print(f"❌ Errore in chat(): {e}")
         return jsonify({"answer": "Si è verificato un errore. Riprova più tardi."})
 
+@app.route("/test")
+def test():
+    return jsonify({
+        "status": "online",
+        "patterns_loaded": len(patterns_data),
+        "message": "✅ Server funzionante"
+    })
+
 if __name__ == "__main__":
-    app.run(debug=True, port=5000, use_reloader=False)
+    port = int(os.environ.get("PORT", 5000))
+    debug = os.environ.get("DEBUG", "False").lower() == "true"
+    print(f"🚀 Avvio server su porta {port}")
+    app.run(debug=debug, port=port, host='0.0.0.0')
