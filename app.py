@@ -4,7 +4,7 @@ import re
 import json
 import random
 import os
-from math import sqrt
+import math  # ⬅️ AGGIUNTO QUESTA IMPORT
 from collections import Counter
 
 app = Flask(__name__)
