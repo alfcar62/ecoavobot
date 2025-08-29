@@ -1,7 +1,2 @@
 flask==2.3.3
 flask-cors==4.0.0
-scikit-learn==1.0.2  # Versione più stabile e leggera
-numpy==1.21.6        # Versione compatibile
-scipy==1.7.3         # Versione compatibile
-threadpoolctl==3.1.0
-joblib==1.2.0
