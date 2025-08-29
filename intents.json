@@ -1,5 +1,24 @@
 {
     "intents": [
+          {
+            "tag": "presentazione",
+            "patterns": [
+                "Ciao, chi sei?",
+                "Chi sei?",
+                "Chi sei tu?",
+                "Sei un bot?",
+                "Sei un chatbot?",
+                "Cosa fai?",
+                "Cosa ci fai qui?"
+            ],
+            "responses": [
+                "Ciao!Sono il chatbot Avogreen. Come posso aiutarti oggi?",
+                "Benvenuto! Sono il chatbot Avogreen. Ti serve un consiglio ambientale?",
+                "Ciao, Sono chatbot Avogreen, come posso aiutarti?",
+                "Ciao, Sono chatbot Avogreen,come posso aiutarti per migliorare l'ambiente?",
+                "Ciao, Sono chatbot Avogreen. Hai bisogno di un consiglio per migliorare l'ambiente?"
+            ]
+        },
         {
             "tag": "saluto",
             "patterns": [
