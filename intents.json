@@ -1,0 +1,237 @@
+{
+    "intents": [
+        {
+            "tag": "saluto",
+            "patterns": [
+                "Ciao",
+                "Ciao!",
+                "Buongiorno",
+                "Buongiorno!",
+                "Salve", 
+                "Salve!",
+                "Ehi",
+                "Ciao bot",
+                "Come va?",
+                "Come Stai?",
+                "Hello",
+                "Hey",
+                "Buonasera",
+                "Buondì"
+            ],
+            "responses": [
+                "Ciao! Come posso aiutarti oggi?",
+                "Benvenuto! Ti serve un consiglio ambientale?",
+                "Ciao, tutto bene? Come posso aiutarti?",
+                "Ciao, come posso aiutarti per migliorare l'ambiente?",
+                "Ciao, hai bisogno di un consiglio per migliorare l'ambiente?"
+            ]
+        },
+         {
+            "tag": "aiuto",
+            "patterns": [
+                "Ciao, cosa posso fare in questa chat?",
+                "Cosa posso fare in questa chat?!",
+                "A cosa serve questa chat?",
+                "Perchè questa chat?",
+                "Cosa devo fare?", 
+                "Mi aiuti?",
+                "Aiuto",
+                "Help",
+                "Di quali argomenti ti occupi?",
+                "Chi sei?",
+                "Cosa posso fare?",
+                "A cosa servi?",
+                "Cosa posso fare per te?",
+                "Cosa posso fare?",
+                "Cosa devo fare?"
+            ],
+            "responses": [
+                "Ciao! Sono Eco Bot e posso aiutarti a migliorare l'ambiente",
+                "Benvenuto! Ti serve un consiglio ambientale?",
+                "Ciao, tutto bene? Come posso aiutarti per migliorare l'ambiente?",
+                "Ciao, come posso aiutarti per migliorare l'ambiente?",
+                "Ciao, hai bisogno di un consiglio per migliorare l'ambiente?"
+            ]
+        },
+        {
+            "tag": "raccolta_differenziata_perchè",
+            "patterns": [  
+                "Perchè fare la raccolta differenziata?",
+                "Perché fare la differenziata?",
+                "Perchè differenziare?",
+                "Cosa devo fare per differenziare?",
+                "Come fare per  differenziare?",
+                "Perché è importante differenziare?",
+                "Motivi per la raccolta differenziata",
+                "A cosa serve differenziare i rifiuti?",
+                "Perché dovrei fare la differenziata?",
+                "A cosa serve la raccolta differenziata?",
+                "Importanza della differenziata"
+            ],
+            "responses": [
+                "La raccolta differenziata consiste nel suddividere i rifiuti domestici in base al tipo di rifiuto svolgendo una prima scrematura che permette poi di riciclare correttamente i materiali riciclabili (carta, vetro, plastica, acciaio e rifiuti organici)",
+                "La raccolta differenziata consiste nel suddividere i rifiuti domestici in base al tipo di rifiuto",
+                "La raccolta differenziata è il primo passo, importante e decisivo, per il corretto riciclo dei rifiuti. Con la raccolta differenziata i privati cittadini svolgono una prima differenziazione dei rifiuti in base al tipo di rifiuto, abbattendo i costi, anche in termini ambientali, di un trattamento successivo a partire da rifiuti non differenziati."
+            ]
+        },
+        {
+            "tag": "raccolta_differenziata",
+            "patterns": [  
+                "Come si fa la raccolta differenziata?",
+                "Come fare la raccolta differenziata?",
+                "Come fare per differenziare?",
+                "Come differenziare i rifiuti?",
+                "Come fare la raccolta dei rifiuti in maniera sostenibile?",
+                "Guida alla raccolta differenziata",
+                "Come riciclare correttamente?",
+                "Istruzioni per la differenziata",
+                "Come separare i rifiuti?",
+                "Modalità di raccolta differenziata"
+            ],
+            "responses": [
+                "La plastica va messa nel contenitore giallo, lancarta nel blu, il vetro nel verde, l'organico nel marrone!",
+                "Puoi seguire le regole del tuo comune."
+            ]
+        },
+        {
+            "tag": "raccolta_plastica",
+            "patterns": [
+                "Dove butto la plastica?",   
+                "Come riciclo la plastica?",
+                "In quale bidone va la plastica?",
+                "Dove va la plastica?",
+                "Bidone per la plastica",
+                "Dove gettare la plastica?",
+                "Plastica dove si butta?",
+                "Contenitore per la plastica",
+                "Dove mettere la plastica?"
+            ],
+            "responses": [
+                "La Plastica nel contenitore giallo!",
+                "Nel contenitore giallo!",
+                "Vanno nel contenitore giallo della plastica: le bottiglie di plastica, i vasetti dello yogurt, le confezioni di pasta (a meno che non sia diversamente indicato), di merendine o caramelle, i sacchetti delle patatine, i pacchetti del caffè. Prima di gettare le bottiglie di plastica, rimuovete le etichette di carta, sciacquate eventuali tracce di bibita o succo e non accartocciatele. Meglio appiattirle in lungo. Non gettare nella plastica i giocattoli di plastica e le posate di plastica"
+            ]
+        },
+        {
+            "tag": "raccolta_carta",
+            "patterns": [
+                "Dove butto la carta?",    
+                "In quale bidone va la carta?",
+                "Dove va la carta?",
+                "Bidone per la carta",
+                "Dove gettare la carta?",
+                "Carta dove si butta?",
+                "Contenitore per la carta",
+                "Dove mettere la carta?"
+            ],
+            "responses": [
+                "La carta  va buttata nel contenitore blu",
+                "Nel bidone blu",
+                "Va butatta nel bidone blu"
+            ]
+        },
+        {
+            "tag": "raccolta_vetro",
+            "patterns": [
+                "Dove butto il vetro?",
+                "In quale contenitore va il vetro?",
+                "Dove va il vetro?",
+                "Bidone per il vetro",
+                "Dove gettare il vetro?",
+                "Vetro dove si butta?",
+                "Contenitore per il vetro",
+                "Dove mettere il vetro?"
+            ],
+            "responses": [
+                "Il vetro va butattato nel contenitore verde!",
+                "Nel contenitore verde"
+            ]
+        },
+        {
+            "tag": "risparmio_energia",
+            "patterns": [
+                "Como posso risparmiare energia?",
+                "Consigli per consumare meno corrente?",
+                "Hai consigli per l'elettricità?",
+                "Ridurre i consumi energetici",
+                "Risparmio energetico in casa",
+                "Come risparmiare elettricità?",
+                "Consigli per risparmiare energia",
+                "Ridurre bolletta luce",
+                "Spegnere le luci"
+            ],
+            "responses": [
+                "Spegni le luci e i dispositivi quando non servono.",
+                "Usa lampadine LED e sfrutta la luce naturale."
+            ]
+        },
+        {
+            "tag": "mobilita_sostenibile",
+            "patterns": [
+                "Cosa significa mobilità sostenibile?",
+                "Come vengo a scuola in modo ecologico?",
+                "Andare in bici è meglio per l'ambiente?",
+                "Trasporti ecologici",
+                "Mobilità green",
+                "Mezzi di trasporto sostenibili",
+                "Spostamenti ecologici",
+                "Come muoversi in modo green"
+            ],
+            "responses": [
+                "Cammina, pedala o usa mezzi pubblici quando puoi!",
+                "Scegli opzioni che riducono le emissioni di CO₂."
+            ]
+        },
+        {
+            "tag": "acqua",
+            "patterns": [
+                "Come risparmiare acqua?",
+                "Hai consigli sull'acqua?",
+                "Perché non sprecare l'acqua?",
+                "Ridurre consumo acqua",
+                "Risparmio idrico",
+                "Consigli per risparmiare acqua",
+                "Non sprecare acqua",
+                "Chiudere il rubinetto",
+                "Ridurre sprechi acqua"
+            ],
+            "responses": [
+                "Chiudi il rubinetto mentre lavi i denti!",
+                "Evita di far scorrere acqua inutilmente."
+            ]
+        },
+        {
+            "tag": "grazie",
+            "patterns": [
+                "Grazie",
+                "Grazie!",
+                "Grazie mille",
+                "Grazie per l'aiuto",
+                "Grazie, a dopo"
+            ],
+            "responses": [
+                "Grazie a te! Ogni azione sostenibile conta!",
+                "Di nulla! Continua a fare la differenza per l'ambiente!"
+            ]
+        },
+          {
+            "tag": "fine",
+            "patterns": [
+                "Grazie, basta così",
+                "Grazie, finito!",
+                "Ok, a presto",
+                "Basta così",
+                "Ciao, ho finito",
+                "Arrivederci",
+                "Buona giornata",
+                "Grazie, a dopo"
+            ],
+            "responses": [
+                "Grazie a te! Ogni azione sostenibile conta!",
+                "Ciao! Torna presto per altri consigli.",
+                "Di nulla! Continua a fare la differenza per l'ambiente!",
+                "Arrivederci! Ricorda di essere eco-friendly!"
+            ]
+        }
+    ]
+}
