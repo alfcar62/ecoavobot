@@ -45,6 +45,31 @@ def generate_response(intent_tag):
         return random.choice(responses[intent_tag])
     return "Non ho capito bene, puoi riformulare?"
 
+# ✅ ROTTA PER SERVIRE IMMAGINI DALLA CARTELLA /img
+@app.route('/img/<path:filename>')
+def serve_images(filename):
+    """Serve file statici dalla cartella img/"""
+    try:
+        return send_from_directory('img', filename)
+    except FileNotFoundError:
+        return jsonify({"error": "Image not found"}), 404
+
+# ✅ ENDPOINT DI DEBUG PER VERIFICARE I FILE
+@app.route("/debug-files")
+def debug_files():
+    """Endpoint per verificare che i file siano accessibili"""
+    import os
+    img_files = []
+    if os.path.exists('img'):
+        img_files = os.listdir('img')
+    
+    return jsonify({
+        "img_folder_exists": os.path.exists('img'),
+        "images_in_img_folder": img_files,
+        "logo_exists": "logoAvogreen.png" in img_files,
+        "current_directory": os.getcwd()
+    })
+
 # ✅ route per servire la home page
 @app.route("/")
 def index():
