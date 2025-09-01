@@ -1,12 +1,13 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import json
 import random
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import os
 
-app = Flask(__name__)
-CORS(app)  # permette richieste da domini diversi
+app = Flask(__name__, static_folder=".")
+CORS(app)  # abilita richieste cross-origin se usi index.html separato
 
 # Carica intents.json
 with open("intents.json", "r", encoding="utf-8") as f:
@@ -30,7 +31,7 @@ X = vectorizer.fit_transform(patterns)
 def classify_intent(user_message, threshold=0.3):
     """Ritorna (intent, confidence) per un messaggio utente"""
     vec = vectorizer.transform([user_message])
-    sims = cosine_similarity(vec, X)[0]  # similarità con tutti i patterns
+    sims = cosine_similarity(vec, X)[0]
     best_idx = sims.argmax()
     best_score = sims[best_idx]
 
@@ -44,10 +45,17 @@ def generate_response(intent_tag):
         return random.choice(responses[intent_tag])
     return "Non ho capito bene, puoi riformulare?"
 
+# ✅ route per servire la home page
+@app.route("/")
+def index():
+    return send_from_directory(".", "index.html")
+
+# ✅ route di test
 @app.route("/test", methods=["GET"])
 def test():
     return jsonify({"status": "ok", "message": "EcoAvoBot è attivo!"})
 
+# ✅ route della chat
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
@@ -69,6 +77,5 @@ def chat():
     })
 
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 5000))  # Render assegna una porta dinamica
+    port = int(os.environ.get("PORT", 5000))  # Render assegna una porta
     app.run(host="0.0.0.0", port=port)
