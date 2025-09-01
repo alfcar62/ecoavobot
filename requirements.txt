@@ -1,4 +1,8 @@
+setuptools>=65.5.1
+wheel
 flask
 flask-cors
-scikit-learn
 gunicorn
+scikit-learn
+numpy
+scipy
