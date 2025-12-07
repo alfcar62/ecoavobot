@@ -66,7 +66,7 @@ def debug_files():
     return jsonify({
         "img_folder_exists": os.path.exists('img'),
         "images_in_img_folder": img_files,
-        "logo_exists": "logoAvogreen.png" in img_files,
+        "logo_exists": "logoavogreen.png" in img_files,
         "current_directory": os.getcwd()
     })
 
@@ -78,7 +78,7 @@ def index():
 # ✅ route di test
 @app.route("/test", methods=["GET"])
 def test():
-    return jsonify({"status": "ok", "message": "EcoAvoBot è attivo!"})
+    return jsonify({"status": "ok", "message": "Avogreen Bot è attivo!"})
 
 # ✅ route della chat
 @app.route("/chat", methods=["POST"])
