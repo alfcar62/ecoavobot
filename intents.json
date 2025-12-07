@@ -108,7 +108,7 @@
                 "Modalità di raccolta differenziata"
             ],
             "responses": [
-                "La plastica va messa nel contenitore giallo, lancarta nel blu, il vetro nel verde, l'organico nel marrone!",
+                "Normalmente la plastica va messa nel contenitore giallo, la carta nel blu, il vetro nel verde, l'organico nel marrone!",
                 "Puoi seguire le regole del tuo comune."
             ]
         },
@@ -126,8 +126,10 @@
                 "Dove mettere la plastica?"
             ],
             "responses": [
-                "La Plastica nel contenitore giallo!",
-                "Nel contenitore giallo!",
+                "La Plastica va posta normalmente nel contenitore giallo (ma controlla le regole del tuo comune)!",
+                "La plastica si differenzia nel contenitore giallo (o specifico del tuo comune) solo se è un imballaggio (bottiglie, flaconi, vaschette), svuotato e possibilmente schiacciato, mentre oggetti in plastica come giocattoli, posate, spazzolini, e altri prodotti (non imballaggi) vanno nell'indifferenziato o all'isola ecologica (ricicleria) se voluminosi, seguendo sempre le regole specifiche del tuo comune. ",
+                "Normalmente nel contenitore giallo, ma verifica se vale diversamente per il tuo comune",
+                "La raccolta della plastica (contenitore giallo): Bottiglie (PET) schiacciate e con tappo (anche avvitato). Flaconi di detersivi, shampoo, sapone. Vaschette per alimenti, pellicole, sacchetti (se previsti dal comune). Tubetti di dentifricio (in quanto imballaggio)",
                 "Vanno nel contenitore giallo della plastica: le bottiglie di plastica, i vasetti dello yogurt, le confezioni di pasta (a meno che non sia diversamente indicato), di merendine o caramelle, i sacchetti delle patatine, i pacchetti del caffè. Prima di gettare le bottiglie di plastica, rimuovete le etichette di carta, sciacquate eventuali tracce di bibita o succo e non accartocciatele. Meglio appiattirle in lungo. Non gettare nella plastica i giocattoli di plastica e le posate di plastica"
             ]
         },
